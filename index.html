@@ -1,344 +1,73 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="he">
+<html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מערכת דיווח נוכחות עובדים</title>
-    <style>
-        :root {
-            --primary: #3498db;
-            --primary-dark: #2980b9;
-            --secondary: #2ecc71;
-            --secondary-dark: #27ae60;
-            --danger: #e74c3c;
-            --danger-dark: #c0392b;
-            --gray: #ecf0f1;
-            --dark: #34495e;
-            --darker: #2c3e50;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background-color: #f9f9f9;
-            direction: rtl;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            background-color: var(--dark);
-            color: white;
-            padding: 1rem;
-            text-align: center;
-        }
-        
-        h1 {
-            font-size: 2.2rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .card {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            margin: 2rem 0;
-        }
-        
-        .clock-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        
-        .current-time {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--dark);
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-            color: var(--darker);
-        }
-        
-        input, select {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-        
-        .btn-group {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-        
-        .btn {
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            flex: 1;
-            text-align: center;
-        }
-        
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background-color: var(--primary-dark);
-        }
-        
-        .btn-success {
-            background-color: var(--secondary);
-            color: white;
-        }
-        
-        .btn-success:hover {
-            background-color: var(--secondary-dark);
-        }
-        
-        .btn-danger {
-            background-color: var(--danger);
-            color: white;
-        }
-        
-        .btn-danger:hover {
-            background-color: var(--danger-dark);
-        }
-        
-        .status {
-            text-align: center;
-            margin-top: 1.5rem;
-            padding: 1rem;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-        
-        .status-in {
-            background-color: rgba(46, 204, 113, 0.2);
-            color: var(--secondary-dark);
-        }
-        
-        .status-out {
-            background-color: rgba(231, 76, 60, 0.2);
-            color: var(--danger-dark);
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        .nav-links {
-            margin-top: 1rem;
-            text-align: center;
-        }
-        
-        .nav-links a {
-            color: white;
-            text-decoration: underline;
-            margin: 0 10px;
-        }
-
-        footer {
-            text-align: center;
-            padding: 1.5rem;
-            color: #777;
-            margin-top: 2rem;
-        }
-
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            .card {
-                padding: 1.5rem;
-            }
-            
-            .btn-group {
-                flex-direction: column;
-            }
-            
-            .current-time {
-                font-size: 1.5rem;
-            }
-        }
-    </style>
+    <title>מערכת החתמת נוכחות - פסח</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body>
-    <header>
-        <h1>מערכת דיווח נוכחות</h1>
-        <div class="nav-links">
-            <a href="index.html">כניסה/יציאה</a>
-            <a href="admin.html">ניהול מערכת</a>
-        </div>
-    </header>
-    
-    <div class="container">
+<body class="pesach-theme">
+    <div class="wave-container">
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
+
+    <!-- מסך כניסה -->
+    <div id="login-screen" class="container">
         <div class="card">
-            <div class="clock-header">
-                <h2>החתמת כרטיס</h2>
-                <div class="current-time" id="current-time">00:00:00</div>
+            <div class="card-header">
+                <img src="images/pesach-logo.svg" alt="לוגו פסח" class="logo">
+                <h1>ברוכים הבאים למערכת הנוכחות</h1>
             </div>
-            
-            <div class="form-group">
-                <label for="employee-id">מספר עובד</label>
-                <input type="text" id="employee-id" placeholder="הכנס מספר עובד">
+            <div class="card-body">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="username"><i class="fas fa-user"></i> שם משתמש</label>
+                        <input type="text" id="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password"><i class="fas fa-lock"></i> סיסמה</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">כניסה <i class="fas fa-sign-in-alt"></i></button>
+                </form>
+                <div id="login-error" class="error-message"></div>
             </div>
-            
-            <div class="form-group">
-                <label for="employee-name">שם העובד</label>
-                <input type="text" id="employee-name" placeholder="הכנס את שמך">
-            </div>
-            
-            <div class="btn-group">
-                <button class="btn btn-success" id="clock-in-btn">כניסה</button>
-                <button class="btn btn-danger" id="clock-out-btn">יציאה</button>
-            </div>
-            
-            <div id="status-message" class="status hidden"></div>
         </div>
     </div>
-    
+
+    <!-- מסך החתמת כרטיס -->
+    <div id="punch-screen" class="container hidden">
+        <div class="card">
+            <div class="card-header">
+                <img src="images/pesach-logo.svg" alt="לוגו פסח" class="logo">
+                <h1>מערכת החתמת נוכחות</h1>
+                <div id="current-time" class="current-time"></div>
+            </div>
+            <div class="card-body">
+                <div class="welcome-message">
+                    <h2>שלום, <span id="employee-name"></span></h2>
+                </div>
+                <div class="punch-buttons">
+                    <button id="punch-in" class="btn btn-success"><i class="fas fa-sign-in-alt"></i> החתמת כניסה</button>
+                    <button id="punch-out" class="btn btn-danger"><i class="fas fa-sign-out-alt"></i> החתמת יציאה</button>
+                </div>
+                <div id="last-punch" class="last-punch"></div>
+                <div id="punch-status" class="punch-status"></div>
+                <button id="logout-btn" class="btn btn-secondary"><i class="fas fa-power-off"></i> התנתקות</button>
+            </div>
+        </div>
+    </div>
+
     <footer>
-        <p>מערכת דיווח נוכחות © 2025</p>
+        <div class="container">
+            <p>מערכת ניהול נוכחות בסגנון פסח &copy; 2025</p>
+        </div>
     </footer>
 
-    <script>
-        // Utility functions
-        function getCurrentTime() {
-            const now = new Date();
-            return {
-                display: now.toLocaleTimeString('he-IL'),
-                timestamp: now.getTime(),
-                iso: now.toISOString()
-            };
-        }
-        
-        function updateClock() {
-            document.getElementById('current-time').textContent = getCurrentTime().display;
-        }
-        
-        function showStatus(message, isClockIn) {
-            const statusEl = document.getElementById('status-message');
-            statusEl.textContent = message;
-            statusEl.classList.remove('hidden', 'status-in', 'status-out');
-            statusEl.classList.add(isClockIn ? 'status-in' : 'status-out');
-        }
-        
-        function getEmployeeData() {
-            return {
-                id: document.getElementById('employee-id').value.trim(),
-                name: document.getElementById('employee-name').value.trim()
-            };
-        }
-        
-        function validateInput(employee) {
-            if (!employee.id || !employee.name) {
-                alert('נא למלא את כל השדות');
-                return false;
-            }
-            return true;
-        }
-        
-        function saveAttendanceRecord(record) {
-            let records = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
-            records.push(record);
-            localStorage.setItem('attendanceRecords', JSON.stringify(records));
-        }
-        
-        // Initialize
-        updateClock();
-        setInterval(updateClock, 1000);
-        
-        // Event listeners
-        document.getElementById('clock-in-btn').addEventListener('click', function() {
-            const employee = getEmployeeData();
-            if (!validateInput(employee)) return;
-            
-            const time = getCurrentTime();
-            const record = {
-                employeeId: employee.id,
-                employeeName: employee.name,
-                type: 'clock-in',
-                timestamp: time.timestamp,
-                time: time.iso
-            };
-            
-            saveAttendanceRecord(record);
-            showStatus(`${employee.name} נרשמת בהצלחה לכניסה בשעה ${time.display}`, true);
-        });
-        
-        document.getElementById('clock-out-btn').addEventListener('click', function() {
-            const employee = getEmployeeData();
-            if (!validateInput(employee)) return;
-            
-            const time = getCurrentTime();
-            const record = {
-                employeeId: employee.id,
-                employeeName: employee.name,
-                type: 'clock-out',
-                timestamp: time.timestamp,
-                time: time.iso
-            };
-            
-            saveAttendanceRecord(record);
-            showStatus(`${employee.name} נרשמת בהצלחה ליציאה בשעה ${time.display}`, false);
-        });
-        
-        // Function to export all data as JSON file
-        function exportData() {
-            const records = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
-            const dataStr = JSON.stringify(records, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-            
-            const exportFileDefaultName = 'attendance-data.json';
-            
-            let linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', exportFileDefaultName);
-            linkElement.click();
-        }
-        
-        // Function to import JSON data
-        function importData(jsonData) {
-            try {
-                const records = JSON.parse(jsonData);
-                localStorage.setItem('attendanceRecords', JSON.stringify(records));
-                alert('הנתונים יובאו בהצלחה');
-            } catch (error) {
-                alert('שגיאה בייבוא נתונים: ' + error.message);
-            }
-        }
-
-        // Allow debugging export/import from console
-        window.appUtils = {
-            exportData: exportData,
-            importData: importData
-        };
-    </script>
+    <script src="js/auth.js"></script>
+    <script src="js/clock.js"></script>
+    <script src="js/punch.js"></script>
 </body>
 </html>
