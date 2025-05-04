@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ממשק ניהול - פסח</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="pesach-theme admin">
+    <div class="wave-container">
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
+
+    <!-- מסך כניסה למנהל -->
+    <div id="admin-login-screen" class="container">
+        <div class="card">
+            <div class="card-header">
+                <img src="images/pesach-logo.svg" alt="לוגו פסח" class="logo">
+                <h1>כניסת מנהל מערכת</h1>
+            </div>
+            <div class="card-body">
+                <form id="admin-login-form">
+                    <div class="form-group">
+                        <label for="admin-username"><i class="fas fa-user-shield"></i> שם משתמש</label>
+                        <input type="text" id="admin-username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="admin-password"><i class="fas fa-lock"></i> סיסמה</label>
+                        <input type="password" id="admin-password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">כניסה <i class="fas fa-sign-in-alt"></i></button>
+                </form>
+                <div id="admin-login-error" class="error-message"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ממשק ניהול -->
+    <div id="admin-dashboard" class="hidden">
+        <header class="admin-header">
+            <div class="container">
+                <div class="logo-container">
+                    <img src="images/pesach-logo.svg" alt="לוגו פסח" class="logo">
+                    <h1>מערכת ניהול מפעל</h1>
+                </div>
+                <div class="admin-controls">
+                    <span id="admin-name"></span>
+                    <button id="admin-logout" class="btn btn-outline"><i class="fas fa-power-off"></i> התנתקות</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="admin-main">
+            <div class="container">
+                <aside class="sidebar">
+                    <nav class="admin-nav">
+                        <ul>
+                            <li><a href="#dashboard" class="active" data-section="dashboard"><i class="fas fa-tachometer-alt"></i> לוח מחוונים</a></li>
+                            <li><a href="#employees" data-section="employees"><i class="fas fa-users"></i> ניהול עובדים</a></li>
+                            <li><a href="#attendance" data-section="attendance"><i class="fas fa-calendar-check"></i> דוחות נוכחות</a></li>
+                            <li><a href="#production" data-section="production"><i class="fas fa-industry"></i> פסי ייצור</a></li>
+                            <li><a href="#inventory" data-section="inventory"><i class="fas fa-boxes"></i> ניהול מלאי</a></li>
+                            <li><a href="#orders" data-section="orders"><i class="fas fa-shopping-cart"></i> רכש והזמנות</a></li>
+                            <li><a href="#logs" data-section="logs"><i class="fas fa-history"></i> לוגים מערכת</a></li>
+                            <li><a href="#settings" data-section="settings"><i class="fas fa-cog"></i> הגדרות מערכת</a></li>
+                        </ul>
+                    </nav>
+                </aside>
+
+                <div class="content">
+                    <!-- לוח מחוונים -->
+                    <section id="dashboard" class="admin-section active">
+                        <h2><i class="fas fa-tachometer-alt"></i> לוח מחוונים</h2>
+                        <div class="dashboard-cards">
+                            <div class="stat-card">
+                                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                                <div class="stat-content">
+                                    <h3>סה"כ עובדים</h3>
+                                    <p id="total-employees">0</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon"><i class="fas fa-user-check"></i></div>
+                                <div class="stat-content">
+                                    <h3>עובדים נוכחים</h3>
+                                    <p id="present-employees">0</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon"><i class="fas fa-industry"></i></div>
+                                <div class="stat-content">
+                                    <h3>פסי ייצור פעילים</h3>
+                                    <p id="active-lines">0</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon"><i class="fas fa-boxes"></i></div>
+                                <div class="stat-content">
+                                    <h3>מוצרים במלאי</h3>
+                                    <p id="inventory-count">0</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dashboard-charts">
+                            <div class="chart-container">
+                                <h3>נוכחות חודשית</h3>
+                                <canvas id="attendance-chart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h3>סטטוס הזמנות</h3>
+                                <canvas id="orders-chart"></canvas>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ניהול עובדים -->
+                    <section id="employees" class="admin-section">
+                        <h2><i class="fas fa-users"></i> ניהול עובדים</h2>
+                        <div class="section-controls">
+                            <button id="add-employee-btn" class="btn btn-primary"><i class="fas fa-user-plus"></i> הוסף עובד חדש</button>
+                            <div class="search-container">
+                                <input type="text" id="search-employee" placeholder="חיפוש עובדים...">
+                                <i class="fas fa-search"></i>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table id="employees-table" class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>מזהה</th>
+                                        <th>שם מלא</th>
+                                        <th>תפקיד</th>
+                                        <th>אימייל</th>
+                                        <th>סטטוס</th>
+                                        <th>פעולות</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- תוכן הטבלה יתמלא דינמית באמצעות JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="table-pagination">
+                            <button id="prev-page" class="btn btn-outline disabled"><i class="fas fa-chevron-right"></i> הקודם</button>
+                            <span id="page-info">עמוד 1 מתוך 1</span>
+                            <button id="next-page" class="btn btn-outline disabled">הבא <i class="fas fa-chevron-left"></i></button>
+                        </div>
+                    </section>
+
+                    <!-- דוחות נוכחות -->
+                    <section id="attendance" class="admin-section">
+                        <h2><i class="fas fa-calendar-check"></i> דוחות נוכחות</h2>
+                        <div class="section-controls">
+                            <div class="filter-container">
+                                <select id="employee-filter">
+                                    <option value="">כל העובדים</option>
+                                    <!-- אפשרויות יתמלאו דינמית -->
+                                </select>
+                                <input type="date" id="date-from">
+                                <input type="date" id="date-to">
+                                <button id="filter-attendance" class="btn btn-primary"><i class="fas fa-filter"></i> סנן</button>
+                            </div>
+                            <button id="export-attendance" class="btn btn-success"><i class="fas fa-file-export"></i> ייצוא לאקסל</button>
+                        </div>
+                        <div class="table-container">
+                            <table id="attendance-table" class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>עובד</th>
+                                        <th>תאריך</th>
+                                        <th>כניסה</th>
+                                        <th>יציאה</th>
+                                        <th>סה"כ שעות</th>
+                                        <th>הערות</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- תוכן הטבלה יתמלא דינמית -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- פסי ייצור -->
+                    <section id="production" class="admin-section">
+                        <h2><i class="fas fa-industry"></i> פסי ייצור</h2>
+                        <div class="section-controls">
+                            <button id="add-line-btn" class="btn btn-primary"><i class="fas fa-plus"></i> הוסף פס ייצור</button>
+                        </div>
+                        <div class="production-lines">
+                            <!-- תוכן פסי הייצור יתמלא דינמית -->
+                        </div>
+                    </section>
+
+                    <!-- ניהול מלאי -->
+                    <section id="inventory" class="admin-section">
+                        <h2><i class="fas fa-boxes"></i> ניהול מלאי</h2>
+                        <div class="section-controls">
+                            <button id="add-item-btn" class="btn btn-primary"><i class="fas fa-plus"></i> הוסף פריט חדש</button>
+                            <div class="search-container">
+                                <input type="text" id="search-inventory" placeholder="חיפוש במלאי...">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="import-export">
+                                <button id="export-inventory" class="btn btn-success"><i class="fas fa-file-export"></i> ייצוא</button>
+                                <button id="import-inventory" class="btn btn-info"><i class="fas fa-file-import"></i> ייבוא</button>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table id="inventory-table" class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>מק"ט</th>
+                                        <th>שם פריט</th>
+                                        <th>קטגוריה</th>
+                                        <th>כמות במלאי</th>
+                                        <th>מחיר יחידה</th>
+                                        <th>ספק</th>
+                                        <th>פעולות</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- תוכן הטבלה יתמלא דינמית -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- רכש והזמנות -->
+                    <section id="orders" class="admin-section">
+                        <h2><i class="fas fa-shopping-cart"></i> רכש והזמנות</h2>
+                        <div class="section-controls">
+                            <button id="add-order-btn" class="btn btn-primary"><i class="fas fa-plus"></i> הזמנה חדשה</button>
+                            <div class="filter-container">
+                                <select id="order-status-filter">
+                                    <option value="">כל הסטטוסים</option>
+                                    <option value="new">חדש</option>
+                                    <option value="processing">בטיפול</option>
+                                    <option value="delivered">נמסר</option>
+                                    <option value="canceled">בוטל</option>
+                                </select>
+                                <button id="filter-orders" class="btn btn-primary"><i class="fas fa-filter"></i> סנן</button>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table id="orders-table" class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>מס' הזמנה</th>
+                                        <th>תאריך</th>
+                                        <th>ספק</th>
+                                        <th>סכום</th>
+                                        <th>סטטוס</th>
+                                        <th>פעולות</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- תוכן הטבלה יתמלא דינמית -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- לוגים מערכת -->
+                    <section id="logs" class="admin-section">
+                        <h2><i class="fas fa-history"></i> לוגים מערכת</h2>
+                        <div class="section-controls">
+                            <div class="filter-container">
+                                <select id="log-type-filter">
+                                    <option value="">כל הפעולות</option>
+                                    <option value="login">התחברות</option>
+                                    <option value="employee">עובדים</option>
+                                    <option value="inventory">מלאי</option>
+                                    <option value="order">הזמנות</option>
+                                    <option value="system">מערכת</option>
+                                </select>
+                                <input type="date" id="log-date">
+                                <button id="filter-logs" class="btn btn-primary"><i class="fas fa-filter"></i> סנן</button>
+                            </div>
+                        </div>
+                        <div class="logs-container">
+                            <div class="log-entries">
+                                <!-- תוכן הלוגים יתמלא דינמית -->
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- הגדרות מערכת -->
+                    <section id="settings" class="admin-section">
+                        <h2><i class="fas fa-cog"></i> הגדרות מערכת</h2>
+                        <div class="settings-container">
+                            <form id="system-settings-form">
+                                <div class="settings-group">
+                                    <h3>הגדרות כלליות</h3>
+                                    <div class="form-group">
+                                        <label for="company-name">שם החברה</label>
+                                        <input type="text" id="company-name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="workday-start">שעת התחלת יום עבודה</label>
+                                        <input type="time" id="workday-start">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="workday-end">שעת סיום יום עבודה</label>
+                                        <input type="time" id="workday-end">
+                                    </div>
+                                </div>
+
+                                <div class="settings-group">
+                                    <h3>משתמשי מערכת</h3>
+                                    <div class="table-container">
+                                        <table id="admin-users-table" class="data-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>שם משתמש</th>
+                                                    <th>תפקיד</th>
+                                                    <th>אימייל</th>
+                                                    <th>פעולות</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- תוכן הטבלה יתמלא דינמית -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <button id="add-admin-btn" class="btn btn-primary mt-10"><i class="fas fa-user-plus"></i> הוסף משתמש מערכת</button>
+                                </div>
+
+                                <div class="settings-group">
+                                    <h3>גיבוי ושחזור נתונים</h3>
+                                    <div class="backup-controls">
+                                        <button id="backup-btn" class="btn btn-primary"><i class="fas fa-download"></i> יצירת גיבוי</button>
+                                        <button id="restore-btn" class="btn btn-warning"><i class="fas fa-upload"></i> שחזור מגיבוי</button>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-success mt-20"><i class="fas fa-save"></i> שמור הגדרות</button>
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+
+        <footer class="admin-footer">
+            <div class="container">
+                <p>מערכת ניהול מפעל בסגנון פסח &copy; 2025</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- מודלים (חלונות קופצים) -->
+    <div id="modal-backdrop" class="modal-backdrop hidden"></div>
+
+    <!-- מודל להוספת/עריכת עובד -->
+    <div id="employee-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="employee-modal-title">הוספת עובד חדש</h3>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="employee-form">
+                    <input type="hidden" id="employee-id">
+                    <div class="form-group">
+                        <label for="employee-name">שם מלא</label>
+                        <input type="text" id="employee-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="employee-role">תפקיד</label>
+                        <input type="text" id="employee-role" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="employee-email">אימייל</label>
+                        <input type="email" id="employee-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="employee-phone">טלפון</label>
+                        <input type="tel" id="employee-phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="employee-username">שם משתמש</label>
+                        <input type="text" id="employee-username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="employee-password">סיסמה</label>
+                        <input type="password" id="employee-password">
+                        <small class="help-text">השאר ריק כדי לשמור את הסיסמה הנוכחית (בעריכה)</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="employee-status">סטטוס</label>
+                        <select id="employee-status">
+                            <option value="active">פעיל</option>
+                            <option value="inactive">לא פעיל</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary close-modal">ביטול</button>
+                <button id="save-employee" class="btn btn-primary">שמור</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- מודל להוספת/עריכת פס ייצור -->
+    <div id="production-line-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="line-modal-title">הוספת פס ייצור חדש</h3>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="production-line-form">
+                    <input type="hidden" id="line-id">
+                    <div class="form-group">
+                        <label for="line-name">שם פס הייצור</label>
+                        <input type="text" id="line-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="line-manager">מנהל אחראי</label>
+                        <select id="line-manager">
+                            <!-- אפשרויות יתמלאו דינמית -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="line-capacity">קיבולת יומית</label>
+                        <input type="number" id="line-capacity" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="line-status">סטטוס</label>
+                        <select id="line-status">
+                            <option value="active">פעיל</option>
+                            <option value="maintenance">בתחזוקה</option>
+                            <option value="inactive">לא פעיל</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary close-modal">ביטול</button>
+                <button id="save-line" class="btn btn-primary">שמור</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- מודל להוספת/עריכת פריט מלאי -->
+    <div id="inventory-item-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="item-modal-title">הוספת פריט חדש למלאי</h3>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="inventory-item-form">
+                    <input type="hidden" id="item-id">
+                    <div class="form-group">
+                        <label for="item-sku">מק"ט</label>
+                        <input type="text" id="item-sku" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="item-name">שם פריט</label>
+                        <input type="text" id="item-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="item-category">קטגוריה</label>
+                        <select id="item-category">
+                            <option value="raw">חומרי גלם</option>
+                            <option value="finished">מוצרים מוגמרים</option>
+                            <option value="packaging">אריזות</option>
+                            <option value="equipment">ציוד</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="item-quantity">כמות במלאי</label>
+                        <input type="number" id="item-quantity" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="item-price">מחיר יחידה</label>
+                        <input type="number" id="item-price" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="item-supplier">ספק</label>
+                        <input type="text" id="item-supplier">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary close-modal">ביטול</button>
+                <button id="save-item" class="btn btn-primary">שמור</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- מודל להוספת הזמנה חדשה -->
+    <div id="order-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="order-modal-title">הזמנה חדשה</h3>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="order-form">
+                    <input type="hidden" id="order-id">
+                    <div class="form-group">
+                        <label for="order-supplier">ספק</label>
+                        <input type="text" id="order-supplier" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="order-date">תאריך</label>
+                        <input type="date" id="order-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="order-status">סטטוס</label>
+                        <select id="order-status">
+                            <option value="new">חדש</option>
+                            <option value="processing">בטיפול</option>
+                            <option value="delivered">נמסר</option>
+                            <option value="canceled">בוטל</option>
+                        </select>
+                    </div>
+                    <h4>פריטים</h4>
+                    <div id="order-items">
+                        <div class="order-item">
+                            <select class="item-select">
+                                <!-- אפשרויות יתמלאו דינמית -->
+                            </select>
+                            <input type="number" class="item-quantity" placeholder="כמות" min="1" required>
+                            <span class="item-price">0 ₪</span>
+                            <button type="button" class="remove-item btn-icon"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <button type="button" id="add-order-item" class="btn btn-outline btn-sm"><i class="fas fa-plus"></i> הוסף פריט</button>
+                    <div class="order-summary">
+                        <p>סה"כ: <span id="order-total">0 ₪</span></p>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary close-modal">ביטול</button>
+                <button id="save-order" class="btn btn-primary">שמור</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- מודל לייבוא נתונים -->
+    <div id="import-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>ייבוא נתונים</h3>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="import-controls">
+                    <div class="form-group">
+                        <label for="import-type">סוג ייבוא</label>
+                        <select id="import-type">
+                            <option value="employees">עובדים</option>
+                            <option value="inventory">מלאי</option>
+                            <option value="orders">הזמנות</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="import-file">בחר קובץ</label>
+                        <input type="file" id="import-file" accept=".json,.xlsx,.xls">
+                        <small class="help-text">תמיכה בקבצי JSON ו-Excel</small>
+                    </div>
+                </div>
+                <div id="import-preview" class="import-preview"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary close-modal">ביטול</button>
+                <button id="process-import" class="btn btn-primary">ייבא נתונים</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- חיבור לספריות JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- טעינת קבצי JavaScript בסדר הנכון -->
+    <script src="js/admin-data.js"></script>
+    <script src="js/admin-auth.js"></script>
+    <script src="js/admin-dashboard.js"></script>
+    <script src="js/admin-employees.js"></script>
+    <script src="js/admin-attendance.js"></script>
+    <script src="js/admin-production.js"></script>
+    <script src="js/admin-inventory.js"></script>
+    <script src="js/admin-orders.js"></script>
+    <script src="js/admin-logs.js"></script>
+    <script src="js/admin-settings.js"></script>
+    <script src="js/admin-export.js"></script>
+</body>
+</html>

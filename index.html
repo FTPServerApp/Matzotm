@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מערכת החתמת נוכחות - פסח</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="pesach-theme">
+    <div class="wave-container">
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
+
+    <!-- מסך כניסה -->
+    <div id="login-screen" class="container">
+        <div class="card">
+            <div class="card-header">
+                <img src="images/pesach-logo.svg" alt="לוגו פסח" class="logo">
+                <h1>ברוכים הבאים למערכת הנוכחות</h1>
+            </div>
+            <div class="card-body">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="username"><i class="fas fa-user"></i> שם משתמש</label>
+                        <input type="text" id="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password"><i class="fas fa-lock"></i> סיסמה</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">כניסה <i class="fas fa-sign-in-alt"></i></button>
+                </form>
+                <div id="login-error" class="error-message"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- מסך החתמת כרטיס -->
+    <div id="punch-screen" class="container hidden">
+        <div class="card">
+            <div class="card-header">
+                <img src="images/pesach-logo.svg" alt="לוגו פסח" class="logo">
+                <h1>מערכת החתמת נוכחות</h1>
+                <div id="current-time" class="current-time"></div>
+            </div>
+            <div class="card-body">
+                <div class="welcome-message">
+                    <h2>שלום, <span id="employee-name"></span></h2>
+                </div>
+                <div class="punch-buttons">
+                    <button id="punch-in" class="btn btn-success"><i class="fas fa-sign-in-alt"></i> החתמת כניסה</button>
+                    <button id="punch-out" class="btn btn-danger"><i class="fas fa-sign-out-alt"></i> החתמת יציאה</button>
+                </div>
+                <div id="last-punch" class="last-punch"></div>
+                <div id="punch-status" class="punch-status"></div>
+                <button id="logout-btn" class="btn btn-secondary"><i class="fas fa-power-off"></i> התנתקות</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>מערכת ניהול נוכחות בסגנון פסח &copy; 2025</p>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script src="js/clock.js"></script>
+    <script src="js/punch.js"></script>
+</body>
+</html>
